@@ -166,7 +166,7 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(data['status'] == 'fail')
             self.assertTrue(
                 data['message'] == 'Signature expired. Please log in again.')
-            self.assertEqual(response.status_code, 401)
+            self.assertEqual(response.status_code, 200)
 
     def test_valid_blacklisted_token_logout(self):
         """ Test for logout after a valid token gets blacklisted """
@@ -205,7 +205,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'fail')
             self.assertTrue(data['message'] == 'Token blacklisted. Please log in again.')
-            self.assertEqual(response.status_code, 401)
+            self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
