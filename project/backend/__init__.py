@@ -1,4 +1,4 @@
-# project/server/__init__.py
+# project/backend/__init__.py
 
 import os
 
@@ -12,15 +12,15 @@ CORS(app)
 
 app_settings = os.getenv(
     'APP_SETTINGS',
-    'project.server.config.DevelopmentConfig'
+    'project.backend.config.DevelopmentConfig'
 )
 app.config.from_object(app_settings)
 
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
-from project.server.auth.views import auth_blueprint
-from project.server.glucose.views import glucose_blueprint
+from project.backend.auth.views import auth_blueprint
+from project.backend.glucose.views import glucose_blueprint
 
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(glucose_blueprint)

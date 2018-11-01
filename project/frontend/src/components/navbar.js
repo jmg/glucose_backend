@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
 
 class NavBar extends Component {
 
@@ -7,6 +6,12 @@ class NavBar extends Component {
 
   logout = () => {
     this.props.handleLogin(false, null);
+  }
+
+  getActivePage(page) {
+    let classes = "nav-item my-2 my-lg-0"
+    classes += this.props.page == page ? " active" : ""
+    return classes
   }
 
   render() {
@@ -19,18 +24,18 @@ class NavBar extends Component {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
-            <li className="nav-item active">
+            <li className={this.getActivePage('glucose')}>
               <a onClick={() => this.props.changePage('glucose')} className="nav-link" href="#">Add new <span className="sr-only">(current)</span></a>
             </li>
-            <li className="nav-item my-2 my-lg-0">
+            <li className={this.getActivePage('graph')}>
               <a onClick={() => this.props.changePage('graph')} className="nav-link" href="#">Graph</a>
             </li>
-            <li className="nav-item my-2 my-lg-0">
+            <li className={this.getActivePage('tips')} >
               <a onClick={() => this.props.changePage('tips')} className="nav-link" href="#">Tips</a>
             </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
-            <li style={{marginRight: 10}}><a href="#">{this.props.user.email}</a></li>
+            <li style={{marginRight: 10}}><a href="#">Hello {this.props.user.email}</a></li>
             <li><a href="#" onClick={this.logout}>Logout</a></li>
           </ul>
         </div>

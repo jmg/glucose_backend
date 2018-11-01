@@ -1,7 +1,7 @@
 import jwt
 import datetime
 
-from project.server import app, db, bcrypt
+from project.backend import app, db, bcrypt
 
 
 class BaseModelMixin(object):
@@ -43,7 +43,7 @@ class User(db.Model, BaseModelMixin):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=3600*24),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }

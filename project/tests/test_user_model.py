@@ -1,7 +1,7 @@
 import unittest
 
-from project.server import db
-from project.server.models import User
+from project.backend import db
+from project.backend.models import User
 from project.tests.base import BaseTestCase
 
 

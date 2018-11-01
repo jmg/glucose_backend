@@ -5,7 +5,6 @@ import Graph from './components/graph';
 import Tips from './components/tips';
 import Signup from './components/signup';
 import NavBar from './components/navbar';
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -17,20 +16,18 @@ class App extends Component {
     user: null
   }
 
-  constructor() {
-    super()
-    let user = null
+  componentDidMount() {       
+    
+    document.title = "Glucose"
+
+    let state = null
     try {
-       user = JSON.parse(localStorage.getItem("current_user"));
+      state = JSON.parse(localStorage.getItem("current_state"));
     } catch (e) {
     }
-    if (user) {
-      this.state = {
-        loggedIn: true,
-        page: "glucose",
-        user: user
-      }
-    }
+    if (state) {
+      this.setState(state)
+    }    
   }
 
   render() {
@@ -45,20 +42,21 @@ class App extends Component {
   }
 
   changePage(page) {
-    this.setState({
-      page: page
-    });
+    let state = this.state
+    state["page"] = page  
+    this.setState(state);        
+    localStorage.setItem("current_state", JSON.stringify(state));
   }
 
   handleLogin(loggedIn, user) {
-    this.setState({
+    let state = {
       loggedIn: loggedIn,
+      page: "glucose",
       user: user,
-    });
-
-    localStorage.setItem("current_user", JSON.stringify(user));
+    }
+    this.setState(state);
+    localStorage.setItem("current_state", JSON.stringify(state));
   }
-
 
   renderApp() {
     if (this.state.loggedIn) {
@@ -74,18 +72,18 @@ class App extends Component {
 
   renderPage() {
     if (this.state.page == "glucose") {
-      return <Glucose loggedIn={this.state.loggedIn} changePage={this.changePage.bind(this)}/>;
+      return <Glucose loggedIn={this.state.loggedIn} changePage={this.changePage.bind(this)} user={this.state.user}/>;
     } else if (this.state.page == "tips") {
-      return <Tips loggedIn={this.state.loggedIn} changePage={this.changePage.bind(this)}/>;
+      return <Tips loggedIn={this.state.loggedIn} changePage={this.changePage.bind(this)} user={this.state.user}/>;
     } else if (this.state.page == "graph") {
-      return <Graph loggedIn={this.state.loggedIn} changePage={this.changePage.bind(this)}/>;
+      return <Graph loggedIn={this.state.loggedIn} changePage={this.changePage.bind(this)} user={this.state.user}/>;
     }
   }
 
   renderNavBar() {
 
     if (this.state.loggedIn) {
-      return <NavBar handleLogin={this.handleLogin.bind(this)} changePage={this.changePage.bind(this)} user={this.state.user}/>
+      return <NavBar handleLogin={this.handleLogin.bind(this)} changePage={this.changePage.bind(this)} user={this.state.user} page={this.state.page}/>
     }
   }
 }

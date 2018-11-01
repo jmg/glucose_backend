@@ -1,8 +1,8 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
-from project.server import bcrypt, db
-from project.server.models import User, BlacklistToken
+from project.backend import bcrypt, db
+from project.backend.models import User, BlacklistToken
 from functools import wraps
 
 auth_blueprint = Blueprint('auth', __name__)
@@ -22,7 +22,7 @@ def login_required(function):
                     'status': 'fail',
                     'message': 'Bearer token malformed.'
                 }
-                return make_response(jsonify(response)), 200
+                return make_response(jsonify(response)), 401
         else:
             auth_token = ''
 
@@ -32,7 +32,7 @@ def login_required(function):
                 'status': 'fail',
                 'message': 'Non existent token.'
             }
-            return make_response(jsonify(response)), 200
+            return make_response(jsonify(response)), 401
 
         request.user = user
         return function(*args, **kwargs)
@@ -109,7 +109,7 @@ class LoginAPI(MethodView):
                     'status': 'fail',
                     'message': 'User does not exist.'
                 }
-                return make_response(jsonify(response)), 200
+                return make_response(jsonify(response)), 404
         except Exception as e:
             print(e)
             response = {

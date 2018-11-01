@@ -1,48 +1,40 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
-import "./css/login.css"
+import Api from "../helpers/api";
+import BaseComponent from "./base"
+import "./css/login.css";
 
-class Signup extends Component {
+class Signup extends BaseComponent {
 
   state = {}
 
   showLogin = () => {
 
-    //show signup
     this.props.changePage("login");
   }
 
   handleSignup = (event) => {
 
-    event.preventDefault();
-    let headers = {
-        'Access-Control-Allow-Origin' : '*',
-        'Content-type': "application/json"
-    }
+    event.preventDefault();    
     let data = this.state;
 
-    $.ajax("http://localhost:5000/auth/register", {data: JSON.stringify(data), type: "POST", headers: headers })
-    .then((res) => {
-      if (res.status == "success") {
+    Api.post({
+      "endpoint": "auth/register",       
+      "data": data, 
+      "success": (res) => {
         data["auth_token"] = res.auth_token
         this.props.handleLogin(true, data);
-      } else {
-        this.showError()
+      }, 
+      "failure": (res) => {
+        this.showError(res)
       }
     });
   }
 
-  handleInputChange = (event) => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
+  showError = (res) => {
+    alert(res.message);
+    console.log(res);
   }
-
-
+  
   render() {
     return (
     <div className="container">

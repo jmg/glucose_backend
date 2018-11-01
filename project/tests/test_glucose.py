@@ -3,8 +3,8 @@ import json
 import unittest
 from datetime import datetime
 
-from project.server import db
-from project.server.models import User, GlucoseMeasurement
+from project.backend import db
+from project.backend.models import User, GlucoseMeasurement
 from project.tests.base import BaseTestCase
 from project.tests.test_auth import register_user, login_user, register_and_login_test_user
 
@@ -21,7 +21,7 @@ class TestGlucoseBlueprint(BaseTestCase):
 
         with self.client:
 
-            response = self.client.post(
+            response = self.client.get(
                 '/glucose/tips',
                 headers=dict(
                     Authorization=self.token
@@ -31,11 +31,26 @@ class TestGlucoseBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue("tip" in data)
 
+    def test_all_tips(self):
+
+        with self.client:
+
+            response = self.client.get(
+                '/glucose/tips/all',
+                headers=dict(
+                    Authorization=self.token
+                )
+            )
+            self.assertEqual(response.status_code, 200)
+            data = json.loads(response.data.decode())
+            self.assertTrue("tips" in data)
+            self.assertTrue(isinstance(data["tips"], list))
+
     def test_tips_without_login(self):
 
         with self.client:
 
-            response = self.client.post(
+            response = self.client.get(
                 '/glucose/tips',
                 headers=dict()
             )
@@ -55,7 +70,7 @@ class TestGlucoseBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 200)
             data = json.loads(response.data.decode())
 
-            self.assertEqual(data["status"], "ok")
+            self.assertEqual(data["glucose_status"], "ok")
             self.assertEqual(GlucoseMeasurement.q().count(), 1)
             self.assertEqual(GlucoseMeasurement.q().first().value, 100)
 
@@ -82,7 +97,7 @@ class TestGlucoseBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 200)
             data = json.loads(response.data.decode())
 
-            self.assertEqual(data["status"], "ok")
+            self.assertEqual(data["glucose_status"], "ok")
             self.assertEqual(GlucoseMeasurement.q().count(), 2)
 
             today = datetime.now().date().isoformat()
